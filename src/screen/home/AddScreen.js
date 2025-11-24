@@ -7,16 +7,15 @@ import {
     StyleSheet,
     Alert,
 } from 'react-native';
-import { updateService } from '../api/Api';
-import { getToken } from '../data/Store';
+import { addService } from '../../api/Api';
+import { getToken } from '../../data/Store';
 
-const EditServiceScreen = ({ route, navigation }) => {
-    const { service } = route.params;
-    const [name, setName] = useState(service.name);
-    const [price, setPrice] = useState(service.price.toString());
+const AddServiceScreen = ({ navigation }) => {
+    const [name, setName] = useState('');
+    const [price, setPrice] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleUpdateService = async () => {
+    const handleAddService = async () => {
         if (!name || !price) {
             Alert.alert('Error', 'Please enter service name and price');
             return;
@@ -25,11 +24,11 @@ const EditServiceScreen = ({ route, navigation }) => {
         setLoading(true);
         try {
             const token = await getToken();
-            await updateService(service._id, name, parseFloat(price), token);
-            Alert.alert('Success', 'Service updated successfully');
+            await addService(name, parseFloat(price), token);
+            Alert.alert('Success', 'Service added successfully');
             navigation.goBack();
         } catch (error) {
-            Alert.alert('Error', 'Failed to update service');
+            Alert.alert('Error', 'Failed to add service');
         } finally {
             setLoading(false);
         }
@@ -42,7 +41,7 @@ const EditServiceScreen = ({ route, navigation }) => {
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Text style={styles.backButton}>Back</Text>
                     </TouchableOpacity>
-                    <Text style={styles.headerText}>Edit Service</Text>
+                    <Text style={styles.headerText}>Add New Service</Text>
                 </View>
             </View>
 
@@ -63,10 +62,10 @@ const EditServiceScreen = ({ route, navigation }) => {
 
             <TouchableOpacity
                 style={styles.button}
-                onPress={handleUpdateService}
+                onPress={handleAddService}
                 disabled={loading}>
                 <Text style={styles.buttonText}>
-                    {loading ? 'Updating...' : 'Update Service'}
+                    {loading ? 'Adding...' : 'Add Service'}
                 </Text>
             </TouchableOpacity>
 
@@ -141,4 +140,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default EditServiceScreen;
+export default AddServiceScreen;

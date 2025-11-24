@@ -8,8 +8,7 @@ import {
     Image,
     Alert,
 } from 'react-native';
-import { getAllServices } from '../api/Api';
-import { removeToken } from '../data/Store';
+import { getAllServices } from '../../api/Api';
 import { useFocusEffect } from '@react-navigation/native';
 
 const HomeScreen = ({ navigation }) => {
@@ -33,11 +32,6 @@ const HomeScreen = ({ navigation }) => {
         }, [])
     );
 
-    const handleLogout = async () => {
-        await removeToken();
-        navigation.replace('Login');
-    };
-
     const renderServiceItem = ({ item }) => (
         <TouchableOpacity
             style={styles.serviceCard}
@@ -54,9 +48,10 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>VIET ANH</Text>
             </View>
-
-            <Image style={styles.imageLogo} source={require('../image/logo_rtg.png')} />
-
+            <Image
+                source={require('../../image/logo_rtg.png')}
+                style={styles.imageLogo}
+            />
             <View style={styles.listHeader}>
                 <Text style={styles.listHeaderText}>Danh sách dịch vụ</Text>
                 <TouchableOpacity
@@ -96,7 +91,7 @@ const styles = StyleSheet.create({
     imageLogo: {
         width: '100%',
         marginTop: 5,
-        marginBottom: 10
+        marginBottom: 10,
     },
     headerTitle: {
         fontSize: 25,

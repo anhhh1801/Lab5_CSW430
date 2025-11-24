@@ -1,5 +1,4 @@
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BASE_URL = 'https://kami-backend-5rs0.onrender.com';
 
@@ -16,6 +15,8 @@ export const login = async (phone, password) => {
     }
 };
 
+
+//SERVICE
 // Get all services
 export const getAllServices = async () => {
     try {
@@ -85,3 +86,56 @@ export const deleteService = async (id, token) => {
         throw error;
     }
 };
+
+
+//CUSTOMER
+//Get all customers
+export const getAllCustomers = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/customers`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+//Add a customer
+export const addACustomer = async (name, phone, token) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/customers`,
+            { name, phone },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.log("Add customer error:", error?.response?.data || error);
+        throw error;
+    }
+}
+
+
+
+//TRANSACTION
+//Get all transactions
+export const getAllTransactions = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/transactions`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+//Get a transaction
+export const getATransaction = async (_id) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/transactions/${_id}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}

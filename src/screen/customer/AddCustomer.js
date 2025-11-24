@@ -7,28 +7,28 @@ import {
     StyleSheet,
     Alert,
 } from 'react-native';
-import { addService } from '../api/Api';
-import { getToken } from '../data/Store';
+import { addACustomer } from '../../api/Api';
+import { getToken } from '../../data/Store';
 
-const AddServiceScreen = ({ navigation }) => {
+const AddCustomer = ({ navigation }) => {
     const [name, setName] = useState('');
-    const [price, setPrice] = useState('');
+    const [phone, setPhone] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleAddService = async () => {
-        if (!name || !price) {
-            Alert.alert('Error', 'Please enter service name and price');
+    const handleAddCustomer = async () => {
+        if (!name || !phone) {
+            Alert.alert('Error', 'Please enter Customer name and phone');
             return;
         }
 
         setLoading(true);
         try {
             const token = await getToken();
-            await addService(name, parseFloat(price), token);
-            Alert.alert('Success', 'Service added successfully');
+            await addACustomer(name, phone, token);
+            Alert.alert('Success', 'Customer added successfully');
             navigation.goBack();
         } catch (error) {
-            Alert.alert('Error', 'Failed to add service');
+            Alert.alert("Error", error);
         } finally {
             setLoading(false);
         }
@@ -41,31 +41,31 @@ const AddServiceScreen = ({ navigation }) => {
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Text style={styles.backButton}>Back</Text>
                     </TouchableOpacity>
-                    <Text style={styles.headerText}>Add New Service</Text>
+                    <Text style={styles.headerText}>Add New Customer</Text>
                 </View>
             </View>
 
             <TextInput
                 style={styles.input}
-                placeholder="Service Name"
+                placeholder="Customer Name"
                 value={name}
                 onChangeText={setName}
             />
 
             <TextInput
                 style={styles.input}
-                placeholder="Price"
-                value={price}
-                onChangeText={setPrice}
+                placeholder="Phone"
+                value={phone}
+                onChangeText={setPhone}
                 keyboardType="numeric"
             />
 
             <TouchableOpacity
                 style={styles.button}
-                onPress={handleAddService}
+                onPress={handleAddCustomer}
                 disabled={loading}>
                 <Text style={styles.buttonText}>
-                    {loading ? 'Adding...' : 'Add Service'}
+                    {loading ? 'Adding...' : 'Add Customer'}
                 </Text>
             </TouchableOpacity>
 
@@ -140,4 +140,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default AddServiceScreen;
+export default AddCustomer;

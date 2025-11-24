@@ -8,8 +8,8 @@ import {
     Alert,
     Image,
 } from 'react-native';
-import { login } from '../api/Api';
-import { saveToken } from '../data/Store';
+import { login } from '../../api/Api';
+import { saveToken } from '../../data/Store';
 
 const LoginScreen = ({ navigation }) => {
     const [phone, setPhone] = useState('');
@@ -26,7 +26,7 @@ const LoginScreen = ({ navigation }) => {
         try {
             const response = await login(phone, password);
             await saveToken(response.token);
-            navigation.replace('Home');
+            navigation.replace('MainTabs');
         } catch (error) {
             Alert.alert('Login Failed', 'Invalid phone or password');
         } finally {
@@ -36,10 +36,7 @@ const LoginScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            {/* <Image
-                source={require('../assets/logo.png')} // Add your logo
-                style={styles.logo}
-            /> */}
+
             <Text style={styles.title}>Login</Text>
 
             <TextInput
@@ -77,11 +74,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
         backgroundColor: '#fff',
-    },
-    logo: {
-        width: 100,
-        height: 100,
-        marginBottom: 30,
     },
     title: {
         fontSize: 50,

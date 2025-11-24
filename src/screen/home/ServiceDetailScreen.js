@@ -14,8 +14,8 @@ import {
     MenuTrigger,
     MenuProvider,
 } from 'react-native-popup-menu';
-import { deleteService } from '../api/Api';
-import { getToken } from '../data/Store';
+import { deleteService } from '../../api/Api';
+import { getToken } from '../../data/Store';
 
 const ServiceDetailScreen = ({ route, navigation }) => {
     const { service } = route.params;
