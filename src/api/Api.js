@@ -117,6 +117,30 @@ export const addACustomer = async (name, phone, token) => {
     }
 }
 
+//Delete a customer
+export const deleteACustomer = async (id, token) => {
+    try {
+        const response = await axios.delete(`${BASE_URL}/customers/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+//Get customer detail
+export const getCustomerDetail = async (id) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/customers/${id}`)
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 
 
 //TRANSACTION
@@ -135,6 +159,50 @@ export const getATransaction = async (_id) => {
     try {
         const response = await axios.get(`${BASE_URL}/transactions/${_id}`);
         return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+//Edit customer
+export const updateCustomer = async (id, name, phone, token) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/customers/${id}`, { name, phone },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        )
+        return response;
+    } catch (error) {
+        throw error
+    }
+}
+
+export const addTransaction = async (transactionData, token) => {
+    try {
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        const response = await axios.post(`${BASE_URL}/transactions`, transactionData, config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+//Delete (Cancel) transaction 
+export const CancelTransaction = async (id, token) => {
+    try {
+        const response = await axios.delete(`${BASE_URL}/transactions/${id}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        )
+        return response;
     } catch (error) {
         throw error;
     }

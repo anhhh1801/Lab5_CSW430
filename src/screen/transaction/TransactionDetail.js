@@ -1,6 +1,8 @@
 
 import React from "react";
-import { TouchableOpacity, StyleSheet, View, Text } from "react-native";
+import { TouchableOpacity, StyleSheet, View, Text, Alert } from "react-native";
+import { Menu, MenuOption, MenuOptions, MenuTrigger, MenuProvider } from "react-native-popup-menu";
+import { CancelTransaction } from "../../api/Api";
 
 const TransactionDetail = ({ route, navigation }) => {
     const { transaction } = route.params;
@@ -24,66 +26,104 @@ const TransactionDetail = ({ route, navigation }) => {
         return money.toLocaleString("vi-VN") + " đ";
     }
 
+    const handleCancel = async () => {
+        Alert.alert(
+            "Confirm Cancel",
+            "Are you sure you want to cancel this transaction?",
+            [
+                { text: "Cancel", style: "cancel" },
+                {
+                    text: "Yes",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            const token = await getToken();
+                            await CancelTransaction(transaction._id, token);
+                            Alert.alert("Canceled", "Transaction canceled successfully!");
+                            navigation.goBack();
+                        } catch (error) {
+                            console.log("Cancel failed", error);
+                            Alert.alert("Error", "cancel failed.");
+                        }
+                    }
+                }
+            ]
+        );
+    }
+
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Text style={styles.backButton}>Back</Text>
-                </TouchableOpacity>
-                <Text style={styles.headerText}>TRANSACTION DETAIL</Text>
-            </View>
+        <MenuProvider>
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Text style={styles.backButton}>Back</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.headerText}>TRANSACTION DETAIL</Text>
 
-            <View style={styles.Card}>
-                <Text style={styles.CardHeader}>General Information</Text>
-                <View style={styles.LabelAndContent}>
-                    <Text style={styles.GeneralLabel}>Transaction code</Text>
-                    <Text style={styles.GeneralContent}>{transaction.id}</Text>
+                    <Menu>
+                        <MenuTrigger>
+                            <Text style={styles.menuButtonText}>⋮</Text>
+                        </MenuTrigger>
+                        <MenuOptions>
+                            <MenuOption onSelect={handleCancel}>
+                                <Text style={styles.menuOption}>Cancel</Text>
+                            </MenuOption>
+                        </MenuOptions>
+                    </Menu>
                 </View>
-                <View style={styles.LabelAndContent}>
-                    <Text style={styles.GeneralLabel}>Customer</Text>
-                    <Text style={styles.GeneralContent}>{transaction.customer.name} - {transaction.customer.phone}</Text>
-                </View>
-                <View style={styles.LabelAndContent}>
-                    <Text style={styles.GeneralLabel}>Creation time</Text>
-                    <Text style={styles.GeneralContent}>{formatDate(transaction.createdAt)}</Text>
-                </View>
-            </View>
 
-            <View style={styles.Card}>
-                <Text style={styles.CardHeader}>Service List</Text>
-                <View>
-                    {transaction.services.map((s) => (
-                        <View style={styles.LabelAndContent}>
-                            <Text style={styles.ServiceLabel}>{s.name}</Text>
-                            <Text style={styles.ServiceQuantity}>x{s.quantity}</Text>
-                            <Text style={styles.ServicePrice}>{formatMoney(s.price)}</Text>
-                        </View>
-                    ))};
+                <View style={styles.Card}>
+                    <Text style={styles.CardHeader}>General Information</Text>
+                    <View style={styles.LabelAndContent}>
+                        <Text style={styles.GeneralLabel}>Transaction code</Text>
+                        <Text style={styles.GeneralContent}>{transaction.id}</Text>
+                    </View>
+                    <View style={styles.LabelAndContent}>
+                        <Text style={styles.GeneralLabel}>Customer</Text>
+                        <Text style={styles.GeneralContent}>{transaction.customer.name} - {transaction.customer.phone}</Text>
+                    </View>
+                    <View style={styles.LabelAndContent}>
+                        <Text style={styles.GeneralLabel}>Creation time</Text>
+                        <Text style={styles.GeneralContent}>{formatDate(transaction.createdAt)}</Text>
+                    </View>
                 </View>
-                <View style={styles.line}></View>
-                <View style={styles.LabelAndContent}>
-                    <Text style={styles.GeneralLabel}>Total</Text>
-                    <Text style={styles.GeneralContent}>{formatMoney(transaction.priceBeforePromotion)}</Text>
-                </View>
-            </View>
 
-            <View style={styles.Card}>
-                <Text style={styles.CardHeader}>Cost</Text>
-                <View style={styles.LabelAndContent}>
-                    <Text style={styles.GeneralLabel}>Amount of money</Text>
-                    <Text style={styles.GeneralContent}>{formatMoney(transaction.priceBeforePromotion)}</Text>
+                <View style={styles.Card}>
+                    <Text style={styles.CardHeader}>Service List</Text>
+                    <View>
+                        {transaction.services.map((s) => (
+                            <View style={styles.LabelAndContent}>
+                                <Text style={styles.ServiceLabel}>{s.name}</Text>
+                                <Text style={styles.ServiceQuantity}>x{s.quantity}</Text>
+                                <Text style={styles.ServicePrice}>{formatMoney(s.price)}</Text>
+                            </View>
+                        ))}
+                    </View>
+                    <View style={styles.line}></View>
+                    <View style={styles.LabelAndContent}>
+                        <Text style={styles.GeneralLabel}>Total</Text>
+                        <Text style={styles.GeneralContent}>{formatMoney(transaction.priceBeforePromotion)}</Text>
+                    </View>
                 </View>
-                <View style={styles.LabelAndContent}>
-                    <Text style={styles.GeneralLabel}>Discount</Text>
-                    <Text style={styles.GeneralContent}> - {formatMoney(discount)}</Text>
+
+                <View style={styles.Card}>
+                    <Text style={styles.CardHeader}>Cost</Text>
+                    <View style={styles.LabelAndContent}>
+                        <Text style={styles.GeneralLabel}>Amount of money</Text>
+                        <Text style={styles.GeneralContent}>{formatMoney(transaction.priceBeforePromotion)}</Text>
+                    </View>
+                    <View style={styles.LabelAndContent}>
+                        <Text style={styles.GeneralLabel}>Discount</Text>
+                        <Text style={styles.GeneralContent}> - {formatMoney(discount)}</Text>
+                    </View>
+                    <View style={styles.line}></View>
+                    <View style={styles.LabelAndContent}>
+                        <Text style={styles.PriceLabel}>Total payment</Text>
+                        <Text style={styles.PriceContent}>{formatMoney(transaction.price)}</Text>
+                    </View>
                 </View>
-                <View style={styles.line}></View>
-                <View style={styles.LabelAndContent}>
-                    <Text style={styles.PriceLabel}>Total payment</Text>
-                    <Text style={styles.PriceContent}> - {formatMoney(transaction.price)}</Text>
-                </View>
-            </View>
-        </View >
+            </View >
+        </MenuProvider>
     )
 }
 const styles = StyleSheet.create({
@@ -93,12 +133,23 @@ const styles = StyleSheet.create({
     header: {
         backgroundColor: '#EF506B',
         flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     },
     headerText: {
         color: '#fff',
         fontWeight: 'bold',
         fontSize: 25,
         padding: 10
+    },
+    menuButtonText: {
+        fontSize: 25,
+        color: '#fff'
+    },
+    menuOption: {
+        padding: 10,
+        fontSize: 16,
+        paddingTop: 40
     },
     backButton: {
         fontWeight: 'bold',

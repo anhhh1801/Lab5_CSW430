@@ -11,8 +11,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AllCustomer from "./src/screen/customer/AllCustomer";
 import AllTransaction from "./src/screen/transaction/AllTransaction";
 import TransactionDetail from "./src/screen/transaction/TransactionDetail";
+import AddTransaction from "./src/screen/transaction/AddTransaction";
 import LogoutScreen from "./src/screen/setting/LogoutScreen";
 import AddCustomer from "./src/screen/customer/AddCustomer";
+import CustomerDetail from "./src/screen/customer/CustomerDetail";
+import EditCustomer from "./src/screen/customer/EditCustomer";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -22,11 +25,17 @@ export default function App() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="MainTabs" component={MainTabs} />
+
         <Stack.Screen name="ServiceDetail" component={ServiceDetailScreen} />
         <Stack.Screen name="Add" component={AddScreen} />
         <Stack.Screen name="Edit" component={EditScreen} />
+
         <Stack.Screen name="AddCustomer" component={AddCustomer} />
+        <Stack.Screen name="CustomerDetail" component={CustomerDetail} />
+        <Stack.Screen name="EditCustomer" component={EditCustomer} />
+
         <Stack.Screen name="TransactionDetail" component={TransactionDetail} />
+        <Stack.Screen name="AddTransaction" component={AddTransaction} />
       </Stack.Navigator>
     </NavigationContainer>
   );

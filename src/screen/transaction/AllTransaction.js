@@ -1,7 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { getAllTransactions } from "../../api/Api";
 import { useCallback, useState } from "react";
-import { FlatList, TouchableOpacity, StyleSheet, View, Text } from "react-native";
+import { FlatList, TouchableOpacity, StyleSheet, View, Text, Image } from "react-native";
 
 const AllTransaction = ({ navigation }) => {
     const [listTransaction, setListTransaction] = useState([]);
@@ -23,6 +23,31 @@ const AllTransaction = ({ navigation }) => {
             loadTransactions();
         }, [])
     )
+    const formatDate = (isoString) => {
+        const date = new Date(isoString);
+
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+
+        return `${day}/${month}/${year} ${hours}:${minutes}`;
+    };
+
+    const isCanceled = (status) => {
+        if (status == 'cancelled') {
+            return 'Cancelled';
+        } else {
+            return null;
+        }
+    };
+
+    const formatMoney = (amount) => {
+        return amount.toLocaleString("vi-VN") + " đ";
+    };
+
 
     const renderTransaction = ({ item }) => (
         <TouchableOpacity style={styles.transactionCard} onPress={() => navigation.navigate("TransactionDetail", { transaction: item })}>
@@ -57,6 +82,13 @@ const AllTransaction = ({ navigation }) => {
                 <Text style={styles.headerText}>TRANSACTION</Text>
             </View>
 
+            <Image source={require('../../image/logo_rtg.png')}
+                style={styles.logo}></Image>
+
+            <TouchableOpacity style={styles.AddTransactionButton} onPress={() => navigation.navigate('AddTransaction')}>
+                <Text style={styles.AddTransactionButtonText}>Add Transaction</Text>
+            </TouchableOpacity>
+
             <FlatList
                 data={listTransaction}
                 renderItem={renderTransaction}
@@ -70,30 +102,7 @@ const AllTransaction = ({ navigation }) => {
     )
 };
 
-const formatDate = (isoString) => {
-    const date = new Date(isoString);
 
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-
-    return `${day}/${month}/${year} ${hours}:${minutes}`;
-};
-
-const isCanceled = (status) => {
-    if (status == 'cancelled') {
-        return 'Cancelled';
-    } else {
-        return null;
-    }
-};
-
-const formatMoney = (amount) => {
-    return amount.toLocaleString("vi-VN") + " đ";
-};
 
 const styles = StyleSheet.create({
     container: {
@@ -116,6 +125,23 @@ const styles = StyleSheet.create({
     },
     list: {
         padding: 15,
+    },
+    logo: {
+        width: '100%'
+    },
+    AddTransactionButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '90%',
+        backgroundColor: '#EF506B',
+        margin: 20,
+        borderRadius: 20
+    },
+    AddTransactionButtonText: {
+        padding: 10,
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#fff'
     },
     transactionCard: {
         backgroundColor: '#fff',
